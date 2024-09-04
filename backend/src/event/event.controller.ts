@@ -2,7 +2,7 @@ import { EventService } from './event.service';
 import { Request, Response } from 'express';
 import { Controller, Get, Res, Req, HttpStatus, Param, Body, Post, Put, Delete } from '@nestjs/common';
 import { CreateEventDTO } from './dtos/create-event.dto';
-import { stringify } from 'querystring';
+import { UpdateEventDTO } from './dtos/update-event.dto';   
 
 @Controller('events')
 export class EventController {
@@ -17,7 +17,8 @@ export class EventController {
 
     @Get('/:id')
     async getEvent(@Req() req: Request, @Res() res: Response, @Param('id') id: string) {    
-        const event = await this.appService.getEvent(id);
+        const cc = req.headers['x-country-code']
+        const event = await this.appService.getEvent(id, cc.toString());
         return res.status(HttpStatus.OK).json(event);
     }
 
@@ -29,15 +30,16 @@ export class EventController {
     }  
 
     @Put('/update/:id')
-    async updateEvent(@Req() req: Request, @Res() res: Response, @Param('id') id: string, @Body() updateEventData: CreateEventDTO) {
-        const event = await this.appService.updateEvent(id, updateEventData);
+    async updateEvent(@Req() req: Request, @Res() res: Response, @Param('id') id: string, @Body() updateEventData: UpdateEventDTO) {
+        const cc = req.headers['x-country-code']
+        const event = await this.appService.updateEvent(id, updateEventData, cc.toString());
         return res.status(HttpStatus.OK).json(event);
     }
 
     @Delete('/delete/:id')
     async deleteEvent(@Req() req: Request, @Res() res: Response, @Param('id') id: string) {
-        const event = await this.appService.deleteEvent(id);
-        console.log('Event deleted:', event); 
+        const cc = req.headers['x-country-code']
+        const event = await this.appService.deleteEvent(id, cc.toString());
         return res.status(HttpStatus.OK).json(event);
     }
 }

@@ -72,7 +72,6 @@ export default {
     },
     deleteEvent(id) {
       this.$axios.delete(`${server.baseURL}/events/delete/${id}`).then(data => {
-        console.log(data.data._id);
         if (data.data._id) {
           this.events = this.events.filter(event => event._id !== data.data._id);
         }

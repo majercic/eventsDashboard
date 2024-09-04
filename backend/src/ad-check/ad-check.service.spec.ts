@@ -82,11 +82,13 @@ describe('AdCheckService', () => {
   });
 
   it('should return server error if server is temporarily unavailable', async () => {
-    mockedAxios.get.mockRejectedValueOnce({
-      response: {
-        status: 500,
-      },
-    });
+    for (let i = 0; i <= 3; i++) {
+      mockedAxios.get.mockRejectedValueOnce({
+        response: {
+          status: 500,
+        },
+      });
+    }
 
     expect(service.isCountryAllowed('SI')).rejects.toThrow(new HttpException('Server Error - server is temporarily not available', HttpStatus.INTERNAL_SERVER_ERROR));
   });

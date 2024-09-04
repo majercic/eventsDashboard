@@ -12,6 +12,12 @@ export class DbseedService implements OnModuleInit {
     }
 
     private async seedDatabase() {
+        //check if there are any event types in the database
+        const eventTypes = await this.eventTypeModel.find().exec();
+        if (eventTypes.length === 4) {
+            console.log('Event types already seeded');
+            return;
+        }
         const predefinedTypes = [
             { name: 'crosspromo', restricted: false },
             { name: 'liveops', restricted: false },

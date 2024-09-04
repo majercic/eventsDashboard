@@ -40,7 +40,7 @@ describe('EventTypeService', () => {
     (adCheckService.isCountryAllowed as jest.Mock).mockResolvedValue(true);
     (eventTypeModel.find().exec as jest.Mock).mockResolvedValue([{ name: 'Type 1', restricted: false }, { name: 'Type 2', restricted: true }]);
 
-    const result = await service.getEventTypes('89.142.63.220');
+    const result = await service.getEventTypes('SI');
     expect(result).toEqual([{ name: 'Type 1', restricted: false }, { name: 'Type 2', restricted: true }]);
     expect(adCheckService.isCountryAllowed).toHaveBeenCalledWith('SI');
     expect(eventTypeModel.find).toHaveBeenCalled();
@@ -50,9 +50,9 @@ describe('EventTypeService', () => {
     (adCheckService.isCountryAllowed as jest.Mock).mockResolvedValue(false);
     (eventTypeModel.find().exec as jest.Mock).mockResolvedValue([{ name: 'Event1', restricted: false }]);
 
-    const result = await service.getEventTypes('101.53.160.0');
+    const result = await service.getEventTypes('SI');
     expect(result).toEqual([{ name: 'Event1', restricted: false }]);
-    expect(adCheckService.isCountryAllowed).toHaveBeenCalledWith('US');
+    expect(adCheckService.isCountryAllowed).toHaveBeenCalledWith('SI');
     expect(eventTypeModel.find).toHaveBeenCalledWith({ restricted: false });
   });
 });

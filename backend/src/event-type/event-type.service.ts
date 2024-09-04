@@ -14,8 +14,7 @@ export class EventTypeService {
 
     async getEventTypes(cc: string) {
         const adAllowed = await this.adCheckService.isCountryAllowed(cc);
-        console.log('Country code:', cc);
-        console.log('Ad allowed:', adAllowed);
+
         if (adAllowed) {
             return await this.eventTypeModel.find().exec();
         } else {

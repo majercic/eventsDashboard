@@ -35,10 +35,14 @@ describe('EventTypeController', () => {
 
         const response = await request(app.getHttpServer())
             .get('/event-types')
-            .set('x-forwarded-for', '::ffff:127.0.0.1') 
+            .set('x-country-code', 'SI') 
             .expect(200);
             
         expect(response.body).toEqual(mockEventTypes);
-        expect(eventTypeService.getEventTypes).toHaveBeenCalledWith('::ffff:127.0.0.1');
+        expect(eventTypeService.getEventTypes).toHaveBeenCalledWith('SI');
+    });
+
+    afterAll(async () => {
+        await app.close();
     });
 });
