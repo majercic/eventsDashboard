@@ -1,14 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { EventService } from './event.service';
-import { IpService } from '../ip/ip.service';
 import { Model } from 'mongoose';
 import { Event } from './interfaces/event.interface';
 
 describe('EventService', () => {
     let service: EventService;
     let eventModel: Model<Event>;
-    let ipService: IpService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -21,28 +19,19 @@ describe('EventService', () => {
                         populate: jest.fn().mockReturnThis(),
                         exec: jest.fn(),
                     },
-                },
-                {
-                    provide: IpService,
-                    useValue: {
-                        getCountryCodeFromIp: jest.fn(),
-                    },
-                },
+                }
             ],
         }).compile();
 
         service = module.get<EventService>(EventService);
         eventModel = module.get<Model<Event>>(getModelToken('Event'));
-        ipService = module.get<IpService>(IpService);
     });
 
     it('should return all events', async () => {
-        (ipService.getCountryCodeFromIp as jest.Mock).mockResolvedValue('SI');
         (eventModel.find().exec as jest.Mock).mockResolvedValue([{ id: 1, name: 'Event 1', description: 'Description 1', type: 'Type 1', priority: 1}, { id: 2, name: 'Event 2', description: 'Description 2', type: 'Type 2', priority: 2}]);
 
         const result = await service.getEvents('89.142.63.220')
         expect(result).toEqual([{ id: 1, name: 'Event 1', description: 'Description 1', type: 'Type 1', priority: 1}, { id: 2, name: 'Event 2', description: 'Description 2', type: 'Type 2', priority: 2}]);
-        expect(ipService.getCountryCodeFromIp).toHaveBeenCalledWith('89.142.63.220');
         expect(eventModel.find).toHaveBeenCalled();
     });
         

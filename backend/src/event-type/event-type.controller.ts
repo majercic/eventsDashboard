@@ -1,5 +1,6 @@
 import { EventTypeService } from './event-type.service';
 import { Controller, Get, Res, Req, HttpStatus } from '@nestjs/common';
+import { createCipher } from 'crypto';
 import { Request, Response } from 'express';
 
 @Controller('event-types')
@@ -8,9 +9,8 @@ export class EventTypeController {
 
     @Get()
     async getEventTypes( @Req() req: Request, @Res() res: Response) {
-        const ip = req.ip === '::1' ? req.headers['x-forwarded-for'] : req.ip;
-
-        const eventTypes = await this.eventTypeService.getEventTypes(ip.toString());
+        const cc = req.headers['x-country-code']
+        const eventTypes = await this.eventTypeService.getEventTypes(cc.toString());
         return res.status(HttpStatus.OK).json(eventTypes);
     }
 }

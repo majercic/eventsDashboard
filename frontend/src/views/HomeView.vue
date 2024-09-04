@@ -1,31 +1,31 @@
 <template>
   <AppHeader />
+
   <div class="container" style="margin-top: 30px;">
     <div class="row g-4">
+      <div v-if="events.length === 0" class="col-12">
+        <div class="alert alert-warning text-center" role="alert">
+          No events available for your office.
+        </div>
+      </div>
       <div class="col-md-3" v-for="event in events" :key="event._id">
         <div class="card mb-3">
           <div class="card-header">
             <i class="bi bi-info-circle" v-b-tooltip.hover :title="event.description"></i>
             {{ event.name }}
             <span class='badge badge-right bg-secondary ms-1'>{{ event.priority }}</span>
-            <span :class="['badge badge-right', getBadgeClass(event.type.name)]">{{ event.type.name }}</span>
-
+            <span :class="['badge badge-right', getBadgeClass(event.type ? event.type.name : 'unknown event')]">{{ event.type ? event.type.name : 'unknown event' }}</span>
           </div>
           <div class="card-body p-5">
-            <!-- <div class="row">
-              <div class="col">
-                <p class="card-text"><small class="text-body-secondary">priority: {{ event.priority }}</small></p>
-              </div> -->
             <div class="col">
               <h1 class="text-center">{{ getRandomCounter() }}</h1>
             </div>
-            <!-- </div> -->
           </div>
           <div class="card-footer bg-transparent">
             <div class="btn-group" role="group" aria-label="card-b-g" style="float: right;">
               <router-link :to="{ name: 'Edit', params: { id: event._id } }"
                 class="btn btn-sm btn-outline-secondary">Edit</router-link>
-              <button v-if="!event.confirmDelete" class="btn btn-sm btn-outline-secondary"
+              <button v-if="!event.confirmDelete" class="btn btn-sm btn-outline-danger" 
                 @click="confirmDelete(event._id)">Delete</button>
               <button v-else class="btn btn-sm btn-outline-danger" @click="deleteEvent(event._id)">Sure?</button>
             </div>
@@ -72,9 +72,9 @@ export default {
     },
     deleteEvent(id) {
       this.$axios.delete(`${server.baseURL}/events/delete/${id}`).then(data => {
-        console.log(data.data.event._id);
-        if (data.data.event._id) {
-          this.events = this.events.filter(event => event._id !== data.data.event._id);
+        console.log(data.data._id);
+        if (data.data._id) {
+          this.events = this.events.filter(event => event._id !== data.data._id);
         }
       });
     },
